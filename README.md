@@ -2,6 +2,8 @@
 > **기관 자산운용을 위한 멀티 에이전트 아키텍처 (Multi-Agent Architecture for Institutional Asset Management)**  
 > 기반 논문: *The Self-Driving Portfolio: Agentic Architecture for Institutional Asset Management* (Andrew Ang, Nazym Azimbayev, Andrey Kim, April 2026)
 
+**🌐 라이브 데모: <https://self-driving-portfolio.onrender.com>** (무료 플랜 — 15분간 접속이 없으면 절전되어 첫 접속에 1분 정도 걸립니다)
+
 ---
 
 ## 1. 프로젝트 개요 (Overview)
