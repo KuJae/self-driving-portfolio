@@ -47,10 +47,17 @@ class SelfDrivingPortfolioPipeline:
         review_result = review_engine.run_review_and_voting(cro_reports)
 
         # Step 6: CIO Agent Ensemble Combination & Board Memo
+        # IPS 적격 후보만 결합하고, 결합안을 CRO 기준으로 다시 검사한다.
+        # 적격 후보가 없거나 결합안이 위반이면 승인하지 않고 위원회 개입으로 넘긴다.
+        eligible = [k for k, rep in cro_reports.items() if rep["is_compliant"]]
         cio_agent = CIOAgent(self.ips, asset_ids, expected_returns, cov_matrix)
-        method_weights = cio_agent.calculate_ensemble_weights(pc_methods, cro_reports)
+        method_weights = cio_agent.calculate_ensemble_weights(pc_methods, cro_reports, eligible)
         portfolio_result = cio_agent.synthesize_portfolio(pc_methods, method_weights)
-        board_memo = cio_agent.generate_board_memo(portfolio_result, macro_result, review_result)
+        final_vec = np.array([portfolio_result["weights"][aid] for aid in asset_ids])
+        final_check = cro_agent.evaluate_portfolio("final", "최종 SAA", "최종안", final_vec)
+        governance = self._governance(cro_reports, eligible, final_check)
+        board_memo = cio_agent.generate_board_memo(portfolio_result, macro_result, review_result,
+                                                   method_weights, governance)
 
         return {
             "ips": self.ips.dict(),
@@ -77,6 +84,32 @@ class SelfDrivingPortfolioPipeline:
                 "method_weights": method_weights,
                 "final_portfolio": portfolio_result
             },
+            "governance": governance,
             "board_memo": board_memo,
             "timestamp": "March 2026 / Active Run"
+        }
+
+    @staticmethod
+    def _governance(cro_reports: Dict[str, Any], eligible: list, final_check: Dict[str, Any]) -> Dict[str, Any]:
+        """IPS 적격 심사 결과와 최종안 재검사를 묶어 승인/위원회 개입 상태를 정한다."""
+        n, total = len(eligible), len(cro_reports)
+        approved = n > 0 and final_check["is_compliant"]
+        if approved:
+            message = f"IPS 적격 후보 {n}/{total}개만 결합했으며, 최종안도 IPS 한도를 충족합니다."
+        elif n == 0:
+            message = (f"IPS를 충족하는 후보가 {total}개 중 하나도 없어 권고안을 만들지 않았습니다. "
+                       "위원회 개입이 필요합니다. 화면의 배분은 전체 후보를 결합한 참고용이며 IPS를 충족하지 않습니다.")
+        else:
+            message = (f"적격 후보 {n}개를 결합했지만 최종안이 IPS를 위반합니다 "
+                       f"({'; '.join(final_check['violations'])}). 위원회 개입이 필요합니다.")
+        return {
+            "status": "approved" if approved else "escalated",
+            "message": message,
+            "eligible_count": n,
+            "candidate_count": total,
+            "eligible": [cro_reports[k]["name"] for k in eligible],
+            "excluded": [{"key": k, "name": rep["name"], "violations": rep["violations"]}
+                         for k, rep in cro_reports.items() if not rep["is_compliant"]],
+            "final_check": {"is_compliant": final_check["is_compliant"],
+                            "violations": final_check["violations"]},
         }

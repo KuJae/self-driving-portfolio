@@ -6,6 +6,7 @@ import { VotingTab } from './components/VotingTab';
 import { CmaTab } from './components/CmaTab';
 import { BoardMemoTab } from './components/BoardMemoTab';
 import { BacktestTab } from './components/BacktestTab';
+import { GovernanceBanner } from './components/GovernanceBanner';
 import { IpsModal } from './components/IpsModal';
 import type { PipelineResult, IPSConfig } from './types';
 import { LayoutDashboard, Users, Scale, FileText, History, AlertCircle, RefreshCw } from 'lucide-react';
@@ -99,6 +100,8 @@ export function App() {
             </button>
           </div>
         )}
+
+        <GovernanceBanner governance={data?.governance} />
 
         <PipelineVisualizer
           data={data}

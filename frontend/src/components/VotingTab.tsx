@@ -9,6 +9,13 @@ interface VotingTabProps {
 export const VotingTab: React.FC<VotingTabProps> = ({ data }) => {
   const [selectedFilter, setSelectedFilter] = useState<string>('전체');
   const review = data.review_step;
+  // 하이라이트 카드의 순위·득표·앙상블 비중은 실행 결과에서 가져온다
+  const rankOf = (key: string) => review.rankings.find((r) => r.method_key === key);
+  const weightOf = (key: string) => (data.ensemble_step.method_weights[key] ?? 0) * 100;
+  const adv = rankOf('adversarial_diversifier');
+  const advW = weightOf('adversarial_diversifier');
+  const ent = rankOf('max_entropy');
+  const entW = weightOf('max_entropy');
 
   const filteredRankings = review.rankings.filter(item => {
     if (selectedFilter === '전체') return true;
@@ -26,11 +33,14 @@ export const VotingTab: React.FC<VotingTabProps> = ({ data }) => {
             <span>적대적 분산 에이전트 (이의 제기 메커니즘)</span>
           </div>
           <h4 className="text-sm font-semibold text-white mb-1">
-            동료 투표 최하위(-36표) 탈락 위기, 그러나 CIO 앙상블 2.7% 배정
+            동료 투표 최하위({adv?.vote ?? '-'}표){advW > 0 ? `, 그러나 CIO 앙상블 ${advW.toFixed(1)}% 배정` : ' · 이번 앙상블에서는 IPS 적격 심사로 제외'}
           </h4>
           <p className="text-xs text-gray-300 leading-relaxed">
             이 에이전트는 컨센서스 중심점과 가장 직교(orthogonal)하는 포트폴리오를 탐색하도록 설계되었습니다.
-            동료 18개 에이전트는 공유된 패러다임을 벗어났다는 이유로 최하위로 투표했으나, <strong>이 거부는 결함이 아니라 의도된 특성입니다.</strong> CIO 에이전트는 머신러닝의 부스팅(Boosting) 원리를 활용하여 컨센서스의 사각지대를 방어하기 위해 2.7%의 전략적 비중을 배정했습니다.
+            동료 에이전트들은 공유된 패러다임을 벗어났다는 이유로 최하위로 투표했으나, <strong>이 거부는 결함이 아니라 의도된 특성입니다.</strong>{' '}
+            {advW > 0
+              ? `CIO 에이전트는 머신러닝의 부스팅(Boosting) 원리를 활용하여 컨센서스의 사각지대를 방어하기 위해 ${advW.toFixed(1)}%의 전략적 비중을 배정했습니다.`
+              : '다만 이번 실행에서는 CRO의 IPS 적격 심사를 통과하지 못해 앙상블에 편입되지 않았습니다.'}
           </p>
         </div>
 
@@ -41,10 +51,13 @@ export const VotingTab: React.FC<VotingTabProps> = ({ data }) => {
             <span>자율 PC-리서처 에이전트의 신규 모델 발견</span>
           </div>
           <h4 className="text-sm font-semibold text-white mb-1">
-            최대 엔트로피(Maximum Entropy) 포트폴리오 (11위, 앙상블 비중 5.6%)
+            최대 엔트로피(Maximum Entropy) 포트폴리오 ({ent?.rank ?? '-'}위, {entW > 0 ? `앙상블 비중 ${entW.toFixed(1)}%` : 'IPS 적격 심사로 제외'})
           </h4>
           <p className="text-xs text-gray-300 leading-relaxed">
-            리서처 에이전트는 기존 파이프라인에 없는 금융 문헌을 자율 탐색하여 최소 샤프지수 제약 하에서 섀넌 엔트로피를 극대화하는 신규 최적화 수식을 도입했습니다. 동료 심의를 통과하여 최종 CIO 앙상블에 5.6% 비중으로 정식 채택되었습니다.
+            리서처 에이전트는 기존 파이프라인에 없는 금융 문헌을 자율 탐색하여 최소 샤프지수 제약 하에서 섀넌 엔트로피를 극대화하는 신규 최적화 수식을 도입했습니다.{' '}
+            {entW > 0
+              ? `동료 심의를 통과하여 최종 CIO 앙상블에 ${entW.toFixed(1)}% 비중으로 정식 채택되었습니다.`
+              : '이번 실행에서는 CRO의 IPS 적격 심사를 통과하지 못해 앙상블에 편입되지 않았습니다.'}
           </p>
         </div>
       </div>

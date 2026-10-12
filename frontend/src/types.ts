@@ -139,8 +139,19 @@ export interface PipelineResult {
     method_weights: Record<string, number>;
     final_portfolio: FinalPortfolio;
   };
+  governance?: Governance;
   board_memo: string;
   timestamp: string;
+}
+
+export interface Governance {
+  status: 'approved' | 'escalated';
+  message: string;
+  eligible_count: number;
+  candidate_count: number;
+  eligible: string[];
+  excluded: Array<{ key: string; name: string; violations: string[] }>;
+  final_check: { is_compliant: boolean; violations: string[] };
 }
 
 export interface BacktestRow {
