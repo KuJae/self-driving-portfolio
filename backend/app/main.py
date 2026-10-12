@@ -10,6 +10,7 @@ from pydantic import BaseModel
 from typing import Dict, Any, Optional
 from app.config import IPSConfig, DEFAULT_IPS, ASSET_CLASSES
 from app.pipeline import SelfDrivingPortfolioPipeline
+from app.backtest import run_backtest
 
 app = FastAPI(
     title="The Self-Driving Portfolio API",
@@ -69,6 +70,11 @@ def run_pipeline(payload: RunPipelineRequest):
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/backtest")
+def get_backtest():
+    """최근 파이프라인 결과의 비중을 실제 ETF 월간 수익률로 백테스트합니다."""
+    return run_backtest(get_latest_run())
 
 # Serve the built React dashboard from the same origin (Docker/Render deployment).
 # Mounted last so /api/* routes take precedence; skipped in local dev where Vite serves the UI.

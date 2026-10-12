@@ -142,3 +142,27 @@ export interface PipelineResult {
   board_memo: string;
   timestamp: string;
 }
+
+export interface BacktestRow {
+  key: string;
+  name: string;
+  category: string;
+  is_final: boolean;
+  is_benchmark: boolean;
+  cagr_pct: number;
+  volatility_pct: number;
+  sharpe_ratio: number;
+  max_drawdown_pct: number;
+  final_nav: number;
+}
+
+export interface BacktestResult {
+  period: { start: string; end: string; months: number };
+  rebalance: string;
+  risk_free_pct: number;
+  data_source: string;
+  tickers: string[];
+  dates: string[];
+  series: Record<string, number[]>;
+  rows: BacktestRow[];
+}

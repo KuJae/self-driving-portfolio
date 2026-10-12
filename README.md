@@ -105,6 +105,17 @@ docker run -p 8000:8000 self-driving-portfolio
 루트의 `render.yaml`이 Render Blueprint 설정입니다. Render 대시보드 → **New → Blueprint** → 이 저장소 선택 → **Apply**.
 `main`에 푸시하면 자동으로 다시 배포됩니다. 무료 플랜은 15분간 접속이 없으면 절전되어 다음 첫 접속에 1분 정도 걸립니다.
 
+### 실데이터 백테스트 탭
+다섯 번째 탭 **실데이터 백테스트**는 파이프라인이 낸 최종 SAA·21개 후보·60/40 벤치마크 비중을
+18개 ETF의 실제 월간 총수익률(2013-07 ~ 2026-09, 분기 리밸런싱)에 적용한 결과를 보여줍니다
+(`GET /api/backtest`, `backend/app/backtest.py`). 주소 끝에 `#backtest`를 붙이면 이 탭이 바로 열립니다.
+
+데이터는 `backend/data/etf_monthly_returns.csv`에 들어 있어 서버가 인터넷에서 받지 않습니다. 갱신하려면:
+```bash
+pip install yfinance
+cd backend && python scripts/fetch_returns.py
+```
+
 ---
 
 ## 4. 주요 인터랙티브 검토 포인트 (How to Test)

@@ -5,9 +5,10 @@ import { OverviewTab } from './components/OverviewTab';
 import { VotingTab } from './components/VotingTab';
 import { CmaTab } from './components/CmaTab';
 import { BoardMemoTab } from './components/BoardMemoTab';
+import { BacktestTab } from './components/BacktestTab';
 import { IpsModal } from './components/IpsModal';
 import type { PipelineResult, IPSConfig } from './types';
-import { LayoutDashboard, Users, Scale, FileText, AlertCircle, RefreshCw } from 'lucide-react';
+import { LayoutDashboard, Users, Scale, FileText, History, AlertCircle, RefreshCw } from 'lucide-react';
 
 const API_BASE_URL = '';
 
@@ -15,7 +16,10 @@ export function App() {
   const [data, setData] = useState<PipelineResult | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [running, setRunning] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<'overview' | 'voting' | 'cma' | 'memo'>('overview');
+  // 주소 끝에 #backtest 를 붙이면 백테스트 탭이 바로 열림 (발표용 링크)
+  const [activeTab, setActiveTab] = useState<'overview' | 'voting' | 'cma' | 'memo' | 'backtest'>(
+    () => (window.location.hash === '#backtest' ? 'backtest' : 'overview')
+  );
   const [activeStage, setActiveStage] = useState<number>(6);
   const [isIpsOpen, setIsIpsOpen] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -150,6 +154,18 @@ export function App() {
             <FileText className="h-4 w-4" />
             <span>CIO 이사회 거버넌스 메모</span>
           </button>
+
+          <button
+            onClick={() => setActiveTab('backtest')}
+            className={`flex items-center space-x-2 py-3 px-3 sm:px-4 border-b-2 text-xs sm:text-sm font-semibold transition whitespace-nowrap ${
+              activeTab === 'backtest'
+                ? 'border-blue-500 text-blue-400 bg-blue-950/20'
+                : 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-700'
+            }`}
+          >
+            <History className="h-4 w-4" />
+            <span>실데이터 백테스트</span>
+          </button>
         </div>
 
         {loading && !data ? (
@@ -163,6 +179,7 @@ export function App() {
             {activeTab === 'voting' && <VotingTab data={data} />}
             {activeTab === 'cma' && <CmaTab data={data} />}
             {activeTab === 'memo' && <BoardMemoTab data={data} />}
+            {activeTab === 'backtest' && <BacktestTab data={data} />}
           </div>
         ) : null}
       </main>
