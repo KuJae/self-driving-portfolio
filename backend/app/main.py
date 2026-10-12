@@ -2,8 +2,10 @@
 FastAPI Server for Self-Driving Portfolio Agentic Architecture.
 """
 
+from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import Dict, Any, Optional
 from app.config import IPSConfig, DEFAULT_IPS, ASSET_CLASSES
@@ -67,6 +69,12 @@ def run_pipeline(payload: RunPipelineRequest):
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# Serve the built React dashboard from the same origin (Docker/Render deployment).
+# Mounted last so /api/* routes take precedence; skipped in local dev where Vite serves the UI.
+STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
+if STATIC_DIR.is_dir():
+    app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="dashboard")
 
 if __name__ == "__main__":
     import uvicorn

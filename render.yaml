@@ -1,0 +1,10 @@
+# Render Blueprint — one free Docker web service (dashboard + API on a single URL).
+# Render dashboard → New → Blueprint → select this repository → Apply.
+services:
+  - type: web
+    name: self-driving-portfolio
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    autoDeploy: true

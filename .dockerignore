@@ -1,0 +1,11 @@
+.git
+**/node_modules
+**/__pycache__
+**/.venv
+**/.env
+frontend/dist
+backend/static
+*.pptx
+*.bat
+*.md
+!frontend/README.md

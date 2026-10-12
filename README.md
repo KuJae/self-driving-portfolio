@@ -91,6 +91,18 @@ npm run dev -- --host 0.0.0.0
 ```
 * 웹 대시보드 접속: `http://localhost:5173`
 
+### 방법 C: Docker 한 번에 실행 (배포와 같은 구성)
+백엔드가 빌드된 대시보드까지 함께 제공하므로 주소 하나로 접속합니다.
+```bash
+docker build -t self-driving-portfolio .
+docker run -p 8000:8000 self-driving-portfolio
+```
+* 웹 대시보드 + API: `http://localhost:8000`
+
+### 배포 (Render)
+루트의 `render.yaml`이 Render Blueprint 설정입니다. Render 대시보드 → **New → Blueprint** → 이 저장소 선택 → **Apply**.
+`main`에 푸시하면 자동으로 다시 배포됩니다. 무료 플랜은 15분간 접속이 없으면 절전되어 다음 첫 접속에 1분 정도 걸립니다.
+
 ---
 
 ## 4. 주요 인터랙티브 검토 포인트 (How to Test)
