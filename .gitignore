@@ -1,0 +1,32 @@
+# Python / Backend
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+.env
+
+# Node / Frontend
+node_modules/
+frontend/dist/
+frontend/.vite/
+*.log
+npm-debug.log*
+
+# Local Tunnel Binaries, Archives & Temp Scripts
+cloudflared.exe
+*.zip
+~$*.pptx
+generate_ppt.py
+generate_consulting_ppt.py
+generate_presentation.py
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
