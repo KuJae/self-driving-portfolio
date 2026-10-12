@@ -110,7 +110,10 @@ docker run -p 8000:8000 self-driving-portfolio
 18개 ETF의 실제 월간 총수익률(2013-07 ~ 2026-09, 분기 리밸런싱)에 적용한 결과를 보여줍니다
 (`GET /api/backtest`, `backend/app/backtest.py`). 주소 끝에 `#backtest`를 붙이면 이 탭이 바로 열립니다.
 
-데이터는 `backend/data/etf_monthly_returns.csv`에 들어 있어 서버가 인터넷에서 받지 않습니다. 갱신하려면:
+탭 안에서 데이터 연결 상태(출처·받은 날짜·결측값), ETF별 적용 비중과 실제 성과, ETF별 연도 수익률 원자료를
+함께 보여주며, 원본 CSV는 `GET /api/backtest/data.csv`로 내려받을 수 있습니다.
+
+데이터는 `backend/data/etf_monthly_returns.csv`(+ 받은 날짜·출처를 적은 `.meta.json`)에 들어 있어 서버가 인터넷에서 받지 않습니다. 갱신하려면:
 ```bash
 pip install yfinance
 cd backend && python scripts/fetch_returns.py

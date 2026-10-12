@@ -1,0 +1,27 @@
+{
+  "source": "Yahoo Finance",
+  "method": "yfinance download(interval='1mo', auto_adjust=True) — 배당·분할 반영 수정주가 월말 종가의 월간 변화율",
+  "fetched_at": "2026-10-13",
+  "tickers": [
+    "SPY",
+    "VUG",
+    "VTV",
+    "IWM",
+    "EFA",
+    "EEM",
+    "SHY",
+    "IEF",
+    "TLT",
+    "LQD",
+    "HYG",
+    "BNDX",
+    "PICB",
+    "EMB",
+    "GLD",
+    "DBC",
+    "VNQ",
+    "BIL"
+  ],
+  "first_month": "2013-07",
+  "last_month": "2026-09"
+}

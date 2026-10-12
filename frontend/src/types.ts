@@ -156,13 +156,48 @@ export interface BacktestRow {
   final_nav: number;
 }
 
+export interface BacktestDataStatus {
+  source: string;
+  method: string;
+  fetched_at: string | null;
+  file: string;
+  rows: number;
+  columns: number;
+  missing_values: number;
+}
+
+export interface BacktestAsset {
+  ticker: string;
+  name: string;
+  category: string;
+  final_weight_pct: number;
+  bench_weight_pct: number;
+  cagr_pct: number;
+  volatility_pct: number;
+  max_drawdown_pct: number;
+  best_month: { month: string; return_pct: number };
+  worst_month: { month: string; return_pct: number };
+  yahoo_url: string;
+}
+
+export interface BacktestAnnual {
+  years: string[];
+  months: number[];
+  final: number[];
+  benchmark: number[];
+  by_ticker: Record<string, number[]>;
+}
+
 export interface BacktestResult {
   period: { start: string; end: string; months: number };
   rebalance: string;
   risk_free_pct: number;
   data_source: string;
+  data: BacktestDataStatus;
   tickers: string[];
   dates: string[];
   series: Record<string, number[]>;
   rows: BacktestRow[];
+  assets: BacktestAsset[];
+  annual: BacktestAnnual;
 }

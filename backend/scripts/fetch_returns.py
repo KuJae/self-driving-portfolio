@@ -9,6 +9,7 @@
 배포 서버는 인터넷에서 받지 않고 이 스크립트가 만든 CSV만 읽습니다.
 """
 
+import json
 import sys
 import time
 from datetime import date
@@ -22,6 +23,7 @@ sys.path.insert(0, str(BACKEND))
 from app.config import ASSET_CLASSES  # noqa: E402
 
 OUT = BACKEND / "data" / "etf_monthly_returns.csv"
+META = BACKEND / "data" / "etf_monthly_returns.meta.json"
 START = "2013-01-01"
 
 
@@ -48,7 +50,15 @@ def main() -> None:
 
     OUT.parent.mkdir(exist_ok=True)
     ret.round(6).to_csv(OUT)
-    print(f"  저장: {OUT.relative_to(BACKEND)}")
+    META.write_text(json.dumps({
+        "source": "Yahoo Finance",
+        "method": "yfinance download(interval='1mo', auto_adjust=True) — 배당·분할 반영 수정주가 월말 종가의 월간 변화율",
+        "fetched_at": date.today().isoformat(),
+        "tickers": tickers,
+        "first_month": ret.index[0],
+        "last_month": ret.index[-1],
+    }, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"  저장: {OUT.relative_to(BACKEND)}, {META.relative_to(BACKEND)}")
     print(f"  기간: {ret.index[0]} ~ {ret.index[-1]} · {len(ret)}개월 · {ret.shape[1]}개 ETF")
 
 
